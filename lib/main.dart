@@ -37,7 +37,6 @@ void main() {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool hasMenu = false;
   String token;
 
   @override

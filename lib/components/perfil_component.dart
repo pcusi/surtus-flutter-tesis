@@ -263,7 +263,7 @@ class _PerfilComponentState extends State<PerfilComponent> {
                         ],
                       ),
                       SizedBox(height: 24.0),
-                      retosNoEvaluados.length == 0
+                      retosNoEvaluados.length < 0
                           ? Expanded(
                             child: Container(
                               child: Row(

@@ -24,7 +24,7 @@ class ApiInscripcion {
       final token = await setToken(json["result"]["token"]);
 
       if (token != null) {
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => PrincipalComponent()));
       }
 
