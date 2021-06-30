@@ -9,6 +9,7 @@ class InputText extends StatelessWidget {
   final Color colorBorder;
   final Color labelColor;
   final Color hintColor;
+  final TextEditingController controller;
 
   const InputText({
     Key key,
@@ -20,11 +21,13 @@ class InputText extends StatelessWidget {
     this.labelColor,
     this.hintColor,
     this.labelText,
+    this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: this.controller,
       obscureText: this.isPassword ? true : false,
       decoration: InputDecoration(
         hintText: this.hintText,

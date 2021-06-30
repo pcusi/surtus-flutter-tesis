@@ -7,7 +7,7 @@ class CircleProgress extends CustomPainter {
   double value;
   Color outer;
 
-  CircleProgress({this.value = 0.0, this.outer});
+  CircleProgress({this.value = 0, this.outer});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -31,8 +31,10 @@ class CircleProgress extends CustomPainter {
 
     canvas.drawCircle(center, radius, outerCircle);
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), pi / 2, pi,
-        false, completeArc);
+    double angle = 2 * pi * (value/100);
+
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
+        -pi / 2, angle, false, completeArc);
   }
 
   @override

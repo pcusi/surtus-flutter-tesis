@@ -47,7 +47,8 @@ class _RetosComponentState extends State<RetosComponent> {
 
   crearReto(context) async {
     if (token != null) {
-      final retoCreado = await apiReto.crearReto(reto.nombre, reto.idModulo, token, context);
+      final retoCreado =
+          await apiReto.crearReto(reto.nombre, reto.idModulo, token, context);
       if (retoCreado != null) {
         setState(() {});
         Navigator.pop(context);
@@ -60,41 +61,50 @@ class _RetosComponentState extends State<RetosComponent> {
       future: apiReto.listarRetosUsuario(token),
       builder: (_, snapshot) {
         if (snapshot.hasData) {
-          return Container(
-            width: width,
-            child: ListView.builder(
-              itemCount: snapshot.data.length,
-              padding: EdgeInsets.zero,
-              itemBuilder: (_, index) {
-                retos = snapshot.data;
-                return RetosContainer(
-                  key: UniqueKey(),
-                  hasNavigation: retos[index].evaluacion.length > 0 ? false : true,
-                  hasCircle: true,
-                  nota: retos[index].evaluacion.length > 0
-                      ? "Nota ${retos[index].evaluacion[0].nota}/5"
-                      : 'Sin evaluar',
-                  value: retos[index].nombre,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => EvaluacionRetoComponent(
-                          idReto: retos[index].id,
-                          nombre: retos[index].nombre,
-                          retoContext: context,
-                          vieneDe: 'Reto',
+          retos = snapshot.data;
+          if (retos.length == 0) {
+            return Center(
+              child: OwnText(
+                value: 'Crea tu primer reto!',
+              ),
+            );
+          } else {
+            return Container(
+              width: width,
+              child: ListView.builder(
+                itemCount: snapshot.data.length,
+                padding: EdgeInsets.zero,
+                itemBuilder: (_, index) {
+                  return RetosContainer(
+                    key: UniqueKey(),
+                    hasNavigation:
+                    retos[index].evaluacion.length > 0 ? false : true,
+                    hasCircle: true,
+                    nota: retos[index].evaluacion.length > 0
+                        ? "Nota ${retos[index].evaluacion[0].nota}/5"
+                        : 'Sin evaluar',
+                    value: retos[index].nombre,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(
+                        MaterialPageRoute(
+                          builder: (_) => EvaluacionRetoComponent(
+                            idReto: retos[index].id,
+                            nombre: retos[index].nombre,
+                            retoContext: context,
+                            vieneDe: 'Reto',
+                          ),
                         ),
-                      ),
-                    ).then((value) => {
-                      if (value == 'RetoExito') {
-                        setState(() {})
-                      }
-                    });
-                  },
-                );
-              },
-            ),
-          );
+                      )
+                          .then((value) => {
+                        if (value == 'RetoExito') {setState(() {})}
+                      });
+                    },
+                  );
+                },
+              ),
+            );
+          }
         }
 
         return Center(

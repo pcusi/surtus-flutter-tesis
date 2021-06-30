@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:surtus_app/components/glosario_component.dart';
+import 'package:surtus_app/components/glosario/glosario_component.dart';
 import 'package:surtus_app/components/modulos_component.dart';
 import 'package:surtus_app/components/principal_component.dart';
 import 'package:surtus_app/components/retos_component.dart';

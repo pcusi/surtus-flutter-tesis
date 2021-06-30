@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:surtus_app/api/requests/clase/clave_vista_request.dart';
 import 'package:surtus_app/api/responses/clase/datos_clase_response.dart';
 import 'package:surtus_app/api/services/clases.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
@@ -20,28 +21,41 @@ class ClasesComponent extends StatefulWidget {
 }
 
 class _ClasesComponentState extends State<ClasesComponent> {
-  ApiClases clase = ApiClases();
-  ApiInscripcion inscripcion = ApiInscripcion();
-  String token;
+  ApiClases apiClase = ApiClases();
+  ApiInscripcion apiInscripcion = ApiInscripcion();
+  Future _future;
   CarouselController claseController = CarouselController();
   CarouselSlider carouselSlider;
   int current = 0;
 
-  obtenerToken() async {
-    token = await inscripcion.getToken();
-    setState(() {});
-    return token;
+  Future<List<DatosClaseResponse>> obtenerClases() async {
+    final initToken = await apiInscripcion.getToken();
+    if (initToken != null) {
+      final data = await apiClase.getClases(widget.idModulo, initToken);
+      return data;
+    }
+    return null;
+  }
+
+  claseVista(int idClase) async {
+    final initToken = await apiInscripcion.getToken();
+    if (initToken != null) {
+      ClaseVistaRequest request = ClaseVistaRequest();
+      request.idClase = idClase;
+      request.idModulo = widget.idModulo;
+      await apiClase.claseVista(request, initToken);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    obtenerToken();
+    _future = obtenerClases();
   }
 
   Widget _claseCarousel({double w, double h, Color iColor}) {
     return FutureBuilder<List<DatosClaseResponse>>(
-      future: clase.getClases(widget.idModulo, token),
+      future: _future,
       builder: (_, snapshot) {
         if (snapshot.hasData) {
           final clasesWidget = snapshot.data.toList();
@@ -69,9 +83,13 @@ class _ClasesComponentState extends State<ClasesComponent> {
                       child: OwnIcon(
                         color: iColor,
                         icon: SurtusIcon.back,
-                        onTap: () => claseController.nextPage(
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.linear),
+                        onTap: () {
+                          claseVista(snapshot.data[current].id);
+
+                          claseController.nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.linear);
+                        },
                       ),
                     )
                   ],

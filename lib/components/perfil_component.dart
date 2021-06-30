@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:surtus_app/api/requests/inscrito/modulos_nivel_request.dart';
+import 'package:surtus_app/api/responses/inscripcion/parametros_inscrito_response.dart';
 import 'package:surtus_app/api/responses/reto/datos_reto_response.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/api/services/reto.dart';
@@ -27,8 +29,10 @@ class PerfilComponent extends StatefulWidget {
 class _PerfilComponentState extends State<PerfilComponent> {
   ApiInscripcion apiInscripcion = ApiInscripcion();
   ApiReto apiReto = ApiReto();
+  ModulosNivelRequest request = ModulosNivelRequest();
   List<DatosRetoResponse> retosNoEvaluados = [];
   String token;
+  String nivel;
 
   obtenerToken() async {
     token = await apiInscripcion.getToken();
@@ -99,6 +103,74 @@ class _PerfilComponentState extends State<PerfilComponent> {
     );
   }
 
+  Widget _perfilAvance({Color circleOuterColor, double dpi, Color gray8}) {
+    return FutureBuilder<ParametrosInscritoResponse>(
+        future: apiInscripcion.obtenerSesion(context),
+        builder: (_, snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+              width: 160.0,
+              height: 160.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0XFFDFE0E6), Color(0XFFFFFFFF)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0XFF565656).withOpacity(0.25),
+                    blurRadius: 25.0,
+                    spreadRadius: 5.0,
+                    offset: Offset(2, 0),
+                  ),
+                  BoxShadow(
+                    color: Colors.white,
+                    blurRadius: 25.0,
+                    spreadRadius: 5.0,
+                    offset: Offset(-5, -0),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CustomPaint(
+                  foregroundPainter: CircleProgress(
+                    outer: circleOuterColor,
+                    value: snapshot.data.avance.toDouble()
+                  ),
+                  child: Container(
+                    width: dpi - 40,
+                    height: dpi - 40,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OwnText(
+                          value: 'Nivel: ${snapshot.data.inscrito.nivel}',
+                          fSize: 12.0,
+                          color: gray8,
+                        ),
+                        SizedBox(height: 8.0),
+                        OwnText(
+                        value: '${snapshot.data.avance}%',
+                        fSize: 24.0,
+                        fWeight: FontWeight.w300,
+                          color: gray8,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -166,60 +238,13 @@ class _PerfilComponentState extends State<PerfilComponent> {
                           ),
                         ],
                       ),
-                      Container(
-                        width: 160.0,
-                        height: 160.0,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Color(0XFFDFE0E6), Color(0XFFFFFFFF)],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0XFF565656).withOpacity(0.25),
-                              blurRadius: 25.0,
-                              spreadRadius: 5.0,
-                              offset: Offset(2, 0),
-                            ),
-                            BoxShadow(
-                              color: Colors.white,
-                              blurRadius: 25.0,
-                              spreadRadius: 5.0,
-                              offset: Offset(-5, -0),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: CustomPaint(
-                            foregroundPainter: CircleProgress(
-                              outer: tema.mono5,
-                            ),
-                            child: Container(
-                              width: dpi - 40,
-                              height: dpi - 40,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  OwnText(
-                                    value: 'Nivel: Básico',
-                                    fSize: 12.0,
-                                    color: tema.gray8,
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  OwnText(
-                                    value: '20%',
-                                    fSize: 24.0,
-                                    fWeight: FontWeight.w300,
-                                    color: tema.gray8,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                      SizedBox(
+                        height: 28.0,
+                      ),
+                      _perfilAvance(
+                        circleOuterColor: tema.mono5,
+                        gray8: tema.gray8,
+                        dpi: dpi,
                       ),
                       SizedBox(height: 32.0),
                       Row(
@@ -263,26 +288,9 @@ class _PerfilComponentState extends State<PerfilComponent> {
                         ],
                       ),
                       SizedBox(height: 24.0),
-                      retosNoEvaluados.length < 0
-                          ? Expanded(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: size.height * .5),
-                                  OwnText(
-                                    value: 'No tienes retos! Enhorabuena.',
-                                    color: tema.gray8,
-                                    fSize: 16.0,
-                                    fWeight: FontWeight.normal,
-                                  ),
-                                ],
-                                ),
-                            ),
-                          )
-                          : Expanded(
-                              child: _retosNoEvaluados(),
-                            ),
+                      Expanded(
+                        child: _retosNoEvaluados(),
+                      ),
                     ],
                   ),
                 ),

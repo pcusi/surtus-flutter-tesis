@@ -4,14 +4,19 @@ class DatosInscritoResponse {
   final String usuario;
   final String nivel;
 
-  DatosInscritoResponse({this.nombres, this.apellidos, this.usuario, this.nivel});
+  DatosInscritoResponse({
+    this.nombres,
+    this.apellidos,
+    this.usuario,
+    this.nivel
+  });
 
   factory DatosInscritoResponse.fromJson(Map<String, dynamic> json) {
-  return DatosInscritoResponse(
-      nombres: json['nombres'],
-      apellidos: json['apellidos'],
-      usuario: json['usuario'],
-      nivel: json['nivel']
+    return DatosInscritoResponse(
+        nombres: json['nombres'],
+        apellidos: json['apellidos'],
+        usuario: json['usuario'],
+        nivel: json['nivel'],
     );
   }
 
@@ -20,7 +25,7 @@ class DatosInscritoResponse {
       "nombres": this.nombres,
       "apellidos": this.apellidos,
       "usuario": this.usuario,
-      "nivel": this.nivel
+      "nivel": this.nivel,
     };
   }
 }
