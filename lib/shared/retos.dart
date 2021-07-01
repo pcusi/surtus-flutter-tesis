@@ -13,6 +13,8 @@ class RetosContainer extends StatelessWidget {
   final String value;
   final String nota;
   final VoidCallback onTap;
+  final bool hasImage;
+  final String image;
 
   const RetosContainer({
     Key key,
@@ -24,6 +26,8 @@ class RetosContainer extends StatelessWidget {
     this.value,
     this.nota,
     this.onTap,
+    this.hasImage = false,
+    this.image,
   }) : super(key: key);
 
   @override
@@ -34,7 +38,10 @@ class RetosContainer extends StatelessWidget {
     return Container(
       width: size.width,
       height: 75.0,
-      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 12.0,),
+      margin: EdgeInsets.symmetric(
+        horizontal: 5.0,
+        vertical: 12.0,
+      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -106,8 +113,12 @@ class RetosContainer extends StatelessWidget {
                               ),
                             ],
                           ),
+                          child: Icon(
+                            SurtusIcon.guide,
+                            color: tema.gray0,
+                          ),
                         )
-                      : Container(),
+                      : (this.hasImage) ? Image.network(image) : Container(),
                 ),
               ),
             ),
@@ -120,7 +131,9 @@ class RetosContainer extends StatelessWidget {
                   color: this.color1,
                   isOverflow: true,
                 ),
-                SizedBox(height: 4.0,),
+                SizedBox(
+                  height: 4.0,
+                ),
                 OwnText(
                   value: this.nota,
                   fSize: 12.0,

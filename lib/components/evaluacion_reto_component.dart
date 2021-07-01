@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:surtus_app/api/requests/reto/generar_evaluacion_request.dart';
 import 'package:surtus_app/api/requests/reto/puntuar_evaluacion_request.dart';
@@ -33,7 +35,7 @@ class EvaluacionRetoComponent extends StatefulWidget {
       _EvaluacionRetoComponentState();
 }
 
-class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> {
+class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with SingleTickerProviderStateMixin {
   ApiInscripcion apiInscripcion = ApiInscripcion();
   ApiReto apiReto = ApiReto();
   GenerarEvaluacionRequest request = GenerarEvaluacionRequest();
@@ -48,6 +50,7 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> {
   IconData icon;
   int _lastIdSelected;
   String mensaje;
+  double _progressIndicator = 0.0;
 
   Future<EvaluacionRetoResponse> getEvaluacionReto() async {
     final initToken = await apiInscripcion.getToken();
@@ -118,6 +121,207 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> {
         }
       }
     });
+  }
+
+  //parte de la evaluación
+  Widget _preguntaEvaluacion({double w, Color purple, Color gray1,
+    Color gray0, Color gray8}) {
+    return FutureBuilder<EvaluacionRetoResponse>(
+      future: _future,
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            width: w,
+            height: 600.0,
+            child: PageView.builder(
+              onPageChanged: getChangedPageAndMoveBar,
+              controller: _evaluacionPageController,
+              itemCount: snapshot.data.evaluacion.length,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (_, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Container(
+                    width: w,
+                    height: 420.0,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: w,
+                          height: 232.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40.0),
+                            gradient: LinearGradient(
+                              colors: [
+                                gray0,
+                                Color(0xFFFFFFFF),
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0XFFFFFFFF),
+                                blurRadius: 4.0,
+                                offset: Offset(-2, -2),
+                              ),
+                              BoxShadow(
+                                color: Color(0xFF565656).withOpacity(0.25),
+                                blurRadius: 4.0,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Image.network(
+                                snapshot.data.evaluacion[index].imagen),
+                          ),
+                        ),
+                        SizedBox(height: 36.0),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 150.0,
+                          ),
+                          child: GridView.builder(
+                            itemCount: snapshot
+                                .data.evaluacion[index].respuestas.length,
+                            gridDelegate:
+                            SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 2,
+                              crossAxisSpacing: 2,
+                              childAspectRatio: 3,
+                            ),
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (_, respuestaIndex) {
+                              final respuestas =
+                                  snapshot.data.evaluacion[index].respuestas;
+                              return ListTile(
+                                title: OwnText(
+                                  value: respuestas[respuestaIndex].nombre,
+                                  color: gray8,
+                                  fAlign: TextAlign.right,
+                                  fSize: 16.0,
+                                ),
+                                trailing: Radio(
+                                  value: respuestas[respuestaIndex].nombre,
+                                  groupValue: _value,
+                                  activeColor: purple,
+                                  hoverColor: purple,
+                                  toggleable: true,
+                                  onChanged: (String value) {
+                                    setState(() {
+                                      _value = value;
+                                      if (_value ==
+                                          snapshot.data.evaluacion[index]
+                                              .pregunta) {
+                                        _lastIdSelected =
+                                            respuestas[respuestaIndex].id;
+                                        respuestasCorrectas.add(
+                                            RespuestasCorrectas(
+                                                id: respuestas[respuestaIndex]
+                                                    .id,
+                                                esCorrecto:
+                                                respuestas[respuestaIndex]
+                                                    .esCorrecto));
+                                      } else {
+                                        respuestasCorrectas.removeWhere(
+                                                (respuesta) =>
+                                            respuesta.id ==
+                                                _lastIdSelected);
+                                      }
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Stack(
+                          children: [
+                            Positioned(
+                              top: 3.0,
+                              child: SizedBox(
+                                width: 280.0,
+                                height: 12.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  child: LinearProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation(purple),
+                                    backgroundColor: Color(0xFFD9E0FA),
+                                    minHeight: 8.0,
+                                    value: _progressIndicator,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Align(
+                              child: OwnText(
+                                value: "${(currentPage + 1)}/5",
+                                fSize: 12.0,
+                                color: gray8,
+                                fWeight: FontWeight.normal,
+                              ),
+                              alignment: Alignment.centerRight,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 44.0),
+                        currentPage < 4
+                            ? OwnButton(
+                          value: 'Siguiente'.toUpperCase(),
+                          btnBlock: true,
+                          btnColor: gray1,
+                          pTop: 20.0,
+                          pBottom: 20.0,
+                          hasShadow: true,
+                          fColor: gray8,
+                          fWeight: FontWeight.normal,
+                          onPressed: () {
+                            _value = '';
+                            _lastIdSelected = 0;
+                            _evaluacionPageController.nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                            );
+                          },
+                        )
+                            : OwnButton(
+                          value: 'Aceptar'.toUpperCase(),
+                          btnBlock: true,
+                          btnColor: purple,
+                          pTop: 20.0,
+                          pBottom: 20.0,
+                          fColor: gray0,
+                          hasShadow: true,
+                          onPressed: puntuarReto,
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+
+        return Center(
+          child: Container(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 80.0,
+                ),
+                CircularProgressIndicator()
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -203,210 +407,10 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> {
     );
   }
 
-  //parte de la evaluación
-  Widget _preguntaEvaluacion(
-      {double w, Color purple, Color gray1, Color gray0, Color gray8}) {
-    return FutureBuilder<EvaluacionRetoResponse>(
-      future: _future,
-      builder: (_, snapshot) {
-        if (snapshot.hasData) {
-          return Container(
-            width: w,
-            height: 600.0,
-            child: PageView.builder(
-              onPageChanged: getChangedPageAndMoveBar,
-              controller: _evaluacionPageController,
-              itemCount: snapshot.data.evaluacion.length,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (_, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Container(
-                    width: w,
-                    height: 420.0,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: w,
-                          height: 232.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40.0),
-                            gradient: LinearGradient(
-                              colors: [
-                                gray0,
-                                Color(0xFFFFFFFF),
-                              ],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0XFFFFFFFF),
-                                blurRadius: 4.0,
-                                offset: Offset(-2, -2),
-                              ),
-                              BoxShadow(
-                                color: Color(0xFF565656).withOpacity(0.25),
-                                blurRadius: 4.0,
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Image.network(
-                                snapshot.data.evaluacion[index].imagen),
-                          ),
-                        ),
-                        SizedBox(height: 36.0),
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxHeight: 150.0,
-                          ),
-                          child: GridView.builder(
-                            itemCount: snapshot
-                                .data.evaluacion[index].respuestas.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 2,
-                              crossAxisSpacing: 2,
-                              childAspectRatio: 3,
-                            ),
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (_, respuestaIndex) {
-                              final respuestas =
-                                  snapshot.data.evaluacion[index].respuestas;
-                              return ListTile(
-                                title: OwnText(
-                                  value: respuestas[respuestaIndex].nombre,
-                                  color: gray8,
-                                  fAlign: TextAlign.right,
-                                  fSize: 16.0,
-                                ),
-                                trailing: Radio(
-                                  value: respuestas[respuestaIndex].nombre,
-                                  groupValue: _value,
-                                  activeColor: purple,
-                                  hoverColor: purple,
-                                  toggleable: true,
-                                  onChanged: (String value) {
-                                    setState(() {
-                                      _value = value;
-                                      if (_value ==
-                                          snapshot.data.evaluacion[index]
-                                              .pregunta) {
-                                        _lastIdSelected =
-                                            respuestas[respuestaIndex].id;
-                                        respuestasCorrectas.add(
-                                            RespuestasCorrectas(
-                                                id: respuestas[respuestaIndex]
-                                                    .id,
-                                                esCorrecto:
-                                                    respuestas[respuestaIndex]
-                                                        .esCorrecto));
-                                      } else {
-                                        respuestasCorrectas.removeWhere(
-                                            (respuesta) =>
-                                                respuesta.id ==
-                                                _lastIdSelected);
-                                      }
-                                    });
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        Stack(
-                          children: [
-                            Positioned(
-                              top: 3.0,
-                              child: SizedBox(
-                                width: 280.0,
-                                height: 12.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                  child: LinearProgressIndicator(
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(purple),
-                                    backgroundColor: Color(0xFFD9E0FA),
-                                    minHeight: 8.0,
-                                    value: currentPage.toDouble(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Align(
-                              child: OwnText(
-                                value: "${(currentPage + 1)}/5",
-                                fSize: 12.0,
-                                color: gray8,
-                                fWeight: FontWeight.normal,
-                              ),
-                              alignment: Alignment.centerRight,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 44.0),
-                        currentPage < 4
-                            ? OwnButton(
-                                value: 'Siguiente'.toUpperCase(),
-                                btnBlock: true,
-                                btnColor: gray1,
-                                pTop: 20.0,
-                                pBottom: 20.0,
-                                hasShadow: true,
-                                fColor: gray8,
-                                fWeight: FontWeight.normal,
-                                onPressed: () {
-                                  _value = '';
-                                  _lastIdSelected = 0;
-                                  _evaluacionPageController.nextPage(
-                                    duration: Duration(milliseconds: 300),
-                                    curve: Curves.ease,
-                                  );
-                                },
-                              )
-                            : OwnButton(
-                                value: 'Aceptar'.toUpperCase(),
-                                btnBlock: true,
-                                btnColor: purple,
-                                pTop: 20.0,
-                                pBottom: 20.0,
-                                fColor: gray0,
-                                hasShadow: true,
-                                onPressed: puntuarReto,
-                              )
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        }
-
-        return Center(
-          child: Container(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 80.0,
-                ),
-                CircularProgressIndicator()
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   void getChangedPageAndMoveBar(int page) {
     currentPage = page;
-    setState(() {});
+    setState(() {
+      _progressIndicator = _progressIndicator + 0.2;
+    });
   }
 }

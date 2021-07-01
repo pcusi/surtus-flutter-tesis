@@ -58,6 +58,8 @@ class _GlosarioComponentState extends State<GlosarioComponent> {
                     hasCircle: false,
                     nota: snapshot.data[index].moduloNombre,
                     value: snapshot.data[index].nombre,
+                    hasImage: true,
+                    image: snapshot.data[index].imagen,
                     onTap: () {},
                   );
                 },

@@ -47,45 +47,54 @@ class _PerfilComponentState extends State<PerfilComponent> {
         if (snapshot.hasData) {
           retosNoEvaluados =
               snapshot.data.where((reto) => reto.estado == "N").toList();
-          return Container(
-            width: width,
-            child: ListView.builder(
-              itemCount: retosNoEvaluados.length,
-              padding: EdgeInsets.zero,
-              itemBuilder: (_, index) {
-                return RetosContainer(
-                  key: UniqueKey(),
-                  hasNavigation: true,
-                  hasCircle: true,
-                  nota: 'Sin evaluar',
-                  value: retosNoEvaluados[index].nombre,
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(
-                          MaterialPageRoute(
-                            builder: (_) => EvaluacionRetoComponent(
-                              idReto: retosNoEvaluados[index].id,
-                              nombre: retosNoEvaluados[index].nombre,
-                              vieneDe: 'Perfil',
-                            ),
+
+          if (retosNoEvaluados.length == 0) {
+            return Center(
+              child: OwnText(
+                value: 'No tengo ningún reto pendiente!',
+              ),
+            );
+          } else {
+            return Container(
+              width: width,
+              child: ListView.builder(
+                itemCount: retosNoEvaluados.length,
+                padding: EdgeInsets.zero,
+                itemBuilder: (_, index) {
+                  return RetosContainer(
+                    key: UniqueKey(),
+                    hasNavigation: true,
+                    hasCircle: true,
+                    nota: 'Sin evaluar',
+                    value: retosNoEvaluados[index].nombre,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(
+                        MaterialPageRoute(
+                          builder: (_) => EvaluacionRetoComponent(
+                            idReto: retosNoEvaluados[index].id,
+                            nombre: retosNoEvaluados[index].nombre,
+                            vieneDe: 'Perfil',
                           ),
-                        )
-                        .then((value) => {
-                              if (value == 'PerfilExito')
-                                {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => RetosComponent(),
-                                    ),
-                                  )
-                                }
-                            });
-                  },
-                );
-              },
-            ),
-          );
+                        ),
+                      )
+                          .then((value) => {
+                        if (value == 'PerfilExito')
+                          {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RetosComponent(),
+                              ),
+                            )
+                          }
+                      });
+                    },
+                  );
+                },
+              ),
+            );
+          }
         }
         return Center(
           child: Container(
@@ -205,7 +214,7 @@ class _PerfilComponentState extends State<PerfilComponent> {
               child: Container(
                 width: size.width,
                 decoration: BoxDecoration(
-                  color: tema.gray0,
+                  color: tema.gray1,
                   borderRadius: AnimatedConstants.isDragged
                       ? BorderRadius.circular(25.0)
                       : BorderRadius.circular(0),

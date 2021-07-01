@@ -7,9 +7,11 @@ import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/api/services/modulos.dart';
 import 'package:surtus_app/api/services/reto.dart';
 import 'package:surtus_app/components/evaluacion_reto_component.dart';
+import 'package:surtus_app/components/menu_component.dart';
 import 'package:surtus_app/components/principal_component.dart';
 import 'package:surtus_app/shared/animacion/animated_constants.dart';
 import 'package:surtus_app/shared/animated_menu.dart';
+import 'package:surtus_app/shared/menu.dart';
 import 'package:surtus_app/shared/retos.dart';
 import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
@@ -43,6 +45,10 @@ class _RetosComponentState extends State<RetosComponent> {
   void initState() {
     super.initState();
     obtenerToken();
+    AnimatedConstants.xOffset = 0;
+    AnimatedConstants.yOffset = 0;
+    AnimatedConstants.scaleFactor = 1.0;
+    AnimatedConstants.isDragged = false;
   }
 
   crearReto(context) async {
@@ -129,138 +135,164 @@ class _RetosComponentState extends State<RetosComponent> {
     Temas tema = Temas();
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 32.0),
-          child: Container(
-            width: size.width,
-            height: size.height,
-            decoration: BoxDecoration(
-              color: tema.gray0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    OwnIcon(
-                      color: tema.gray8,
-                      icon: SurtusIcon.back,
-                      onTap: () {
-                        Navigator.pop(context, true);
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 24.0),
-                      child: OwnText(
-                        value: 'Retos',
-                        fSize: 16.0,
-                        fWeight: FontWeight.normal,
-                      ),
-                    ),
-                    Spacer(),
-                    OwnIcon(
-                      color: tema.gray8,
-                      icon: SurtusIcon.add,
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return PopUpForm(
-                              value: 'Crear retos',
-                              isForm: true,
-                              width: 296.0,
-                              height: 180.0,
-                              inputText: InputText(
-                                  labelText: 'Nombre',
-                                  labelColor: tema.mono5,
-                                  hintText: 'Nombre',
-                                  hintColor: tema.gray8,
-                                  color: tema.gray8,
-                                  colorBorder: tema.gray1,
-                                  onChanged: (String nombre) =>
-                                      reto.nombre = nombre),
-                              inputSelect:
-                                  FutureBuilder<List<DatosModuloResponse>>(
-                                future: modulo.getModulos(token),
-                                builder: (_, snapshot) {
-                                  if (snapshot.hasData) {
-                                    List<String> modulos = [];
-                                    for (int i = 0;
-                                        i < snapshot.data.length;
-                                        i++) {
-                                      modulos.add(snapshot.data[i].nombre);
-                                    }
-
-                                    return Container(
-                                      height: 58.0,
-                                      child: DropdownSearch<String>(
-                                        mode: Mode.MENU,
-                                        showSelectedItem: true,
-                                        items: modulos,
-                                        label: "Módulos",
-                                        hint: "Seleccionar módulo",
-                                        maxHeight: 120.0,
-                                        showClearButton: false,
-                                        dropDownButton: DropdownButton<String>(
-                                          icon: Icon(SurtusIcon.right_arrow),
-                                          iconSize: 24,
-                                          style: TextStyle(
-                                            color: tema.gray8,
-                                          ),
-                                          items: [],
-                                        ),
-                                        dropdownSearchDecoration:
-                                            InputDecoration(
-                                          labelStyle: TextStyle(
-                                            color: tema.mono5,
-                                            fontSize: 12.0,
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0xFFD1D3DB),
-                                            ),
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: tema.gray3,
-                                            ),
-                                          ),
-                                        ),
-                                        onChanged: (String value) {
-                                          for (var modulo in snapshot.data) {
-                                            if (modulo.nombre == value) {
-                                              reto.idModulo = modulo.id;
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  }
-                                  return Container();
-                                },
-                              ),
-                              onPressed: () => crearReto(context),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
+      body: Stack(
+        children: [
+          SurtusMenuDrawer(),
+          MenuAnimatedContainer(
+            xOffset: AnimatedConstants.xOffset,
+            yOffset: AnimatedConstants.yOffset,
+            scaleFactor: AnimatedConstants.scaleFactor,
+            isDragged: AnimatedConstants.isDragged,
+            child: SafeArea(
+              child: Container(
+                width: size.width,
+                height: size.height,
+                decoration: BoxDecoration(
+                  color: tema.gray1,
+                  borderRadius: AnimatedConstants.isDragged
+                      ? BorderRadius.circular(25.0)
+                      : BorderRadius.circular(0),
                 ),
-                SizedBox(height: 36.0),
-                Expanded(
-                  child: _retosUsuario(
-                    width: size.width,
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MenuButton(
+                            dragOn: () {
+                              if (!AnimatedConstants.isDragged) {
+                                setState(() {
+                                  AnimatedConstants.xOffset = size.width * 0.75;
+                                  AnimatedConstants.yOffset = size.width * 0.20;
+                                  AnimatedConstants.scaleFactor = 0.80;
+                                  AnimatedConstants.isDragged = true;
+                                });
+                              } else {
+                                setState(() {
+                                  AnimatedConstants.xOffset = 0.0;
+                                  AnimatedConstants.yOffset = 0.0;
+                                  AnimatedConstants.scaleFactor = 1.0;
+                                  AnimatedConstants.isDragged = false;
+                                });
+                              }
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 24.0),
+                            child: OwnText(
+                              value: 'Retos',
+                              fSize: 16.0,
+                              fWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Spacer(),
+                          OwnIcon(
+                            color: tema.gray8,
+                            icon: SurtusIcon.add,
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return PopUpForm(
+                                    value: 'Crear retos',
+                                    isForm: true,
+                                    width: 296.0,
+                                    height: 180.0,
+                                    inputText: InputText(
+                                        labelText: 'Nombre',
+                                        labelColor: tema.mono5,
+                                        hintText: 'Nombre',
+                                        hintColor: tema.gray8,
+                                        color: tema.gray8,
+                                        colorBorder: tema.gray1,
+                                        onChanged: (String nombre) =>
+                                        reto.nombre = nombre),
+                                    inputSelect:
+                                    FutureBuilder<List<DatosModuloResponse>>(
+                                      future: modulo.getModulos(token),
+                                      builder: (_, snapshot) {
+                                        if (snapshot.hasData) {
+                                          List<String> modulos = [];
+                                          for (int i = 0;
+                                          i < snapshot.data.length;
+                                          i++) {
+                                            modulos.add(snapshot.data[i].nombre);
+                                          }
+
+                                          return Container(
+                                            height: 58.0,
+                                            child: DropdownSearch<String>(
+                                              mode: Mode.MENU,
+                                              showSelectedItem: true,
+                                              items: modulos,
+                                              label: "Módulos",
+                                              hint: "Seleccionar módulo",
+                                              maxHeight: 120.0,
+                                              showClearButton: false,
+                                              dropDownButton: DropdownButton<String>(
+                                                icon: Icon(SurtusIcon.right_arrow),
+                                                iconSize: 24,
+                                                style: TextStyle(
+                                                  color: tema.gray8,
+                                                ),
+                                                items: [],
+                                              ),
+                                              dropdownSearchDecoration:
+                                              InputDecoration(
+                                                labelStyle: TextStyle(
+                                                  color: tema.mono5,
+                                                  fontSize: 12.0,
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Color(0xFFD1D3DB),
+                                                  ),
+                                                ),
+                                                border: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: tema.gray3,
+                                                  ),
+                                                ),
+                                              ),
+                                              onChanged: (String value) {
+                                                for (var modulo in snapshot.data) {
+                                                  if (modulo.nombre == value) {
+                                                    reto.idModulo = modulo.id;
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                          );
+                                        }
+                                        return Container();
+                                      },
+                                    ),
+                                    onPressed: () => crearReto(context),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 36.0),
+                      Expanded(
+                        child: _retosUsuario(
+                          width: size.width,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
+          )
+        ],
+      )
     );
   }
 }

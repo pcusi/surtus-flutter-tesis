@@ -53,6 +53,8 @@ class _GlosarioBuscarComponentState extends State<GlosarioBuscarComponent> {
         hasCircle: false,
         nota: glosario.moduloNombre,
         value: glosario.nombre,
+        hasImage: true,
+        image: glosario.imagen,
         onTap: () {},
       );
 
@@ -157,12 +159,14 @@ class _GlosarioBuscarComponentState extends State<GlosarioBuscarComponent> {
                           },
                         ),
                       )
-                    : Center(
-                        child: OwnText(
-                          value: 'No se encontró información',
-                          fSize: 16.0,
-                          color: tema.gray8,
-                          fWeight: FontWeight.w400,
+                    : Expanded(
+                        child: Center(
+                          child: OwnText(
+                            value: 'No se encontró información',
+                            fSize: 16.0,
+                            color: tema.gray8,
+                            fWeight: FontWeight.w400,
+                          ),
                         ),
                       )
               ],

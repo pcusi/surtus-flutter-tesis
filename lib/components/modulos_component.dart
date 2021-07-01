@@ -4,8 +4,12 @@ import 'package:surtus_app/api/responses/modulo/datos_modulo_response.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/api/services/modulos.dart';
 import 'package:surtus_app/components/clases_component.dart';
+import 'package:surtus_app/components/menu_component.dart';
 import 'package:surtus_app/components/principal_component.dart';
+import 'package:surtus_app/shared/animacion/animated_constants.dart';
+import 'package:surtus_app/shared/animated_menu.dart';
 import 'package:surtus_app/shared/interceptor.dart';
+import 'package:surtus_app/shared/menu.dart';
 import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
 import 'package:surtus_app/widgets/icon.dart';
@@ -42,6 +46,10 @@ class _ModulosComponentState extends State<ModulosComponent> {
   void initState() {
     super.initState();
     obtenerToken();
+    AnimatedConstants.xOffset = 0;
+    AnimatedConstants.yOffset = 0;
+    AnimatedConstants.scaleFactor = 1.0;
+    AnimatedConstants.isDragged = false;
   }
 
   Widget _gridModulos({Color bgColor, Color fColor}) {
@@ -104,15 +112,26 @@ class _ModulosComponentState extends State<ModulosComponent> {
     final size = MediaQuery.of(context).size;
     Temas tema = Temas();
 
-    return Material(
-      child: SafeArea(
-        child: isFetching
-            ? InterceptorMessage(
+    return Scaffold(
+      body: Stack(
+        children: [
+          SurtusMenuDrawer(),
+          MenuAnimatedContainer(
+            xOffset: AnimatedConstants.xOffset,
+            yOffset: AnimatedConstants.yOffset,
+            scaleFactor: AnimatedConstants.scaleFactor,
+            isDragged: AnimatedConstants.isDragged,
+            child: SafeArea(
+              child: isFetching
+                  ? InterceptorMessage(
                 value: 'Estamos cargando tus clases! Un momento.',
               )
-            : Container(
+                  : Container(
                 decoration: BoxDecoration(
                   color: tema.gray1,
+                  borderRadius: AnimatedConstants.isDragged
+                      ? BorderRadius.circular(25.0)
+                      : BorderRadius.circular(0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,11 +144,23 @@ class _ModulosComponentState extends State<ModulosComponent> {
                       ),
                       child: Row(
                         children: [
-                          OwnIcon(
-                            color: tema.gray8,
-                            icon: SurtusIcon.back,
-                            onTap: () {
-                              Navigator.pop(context);
+                          MenuButton(
+                            dragOn: () {
+                              if (!AnimatedConstants.isDragged) {
+                                setState(() {
+                                  AnimatedConstants.xOffset = size.width * 0.75;
+                                  AnimatedConstants.yOffset = size.width * 0.20;
+                                  AnimatedConstants.scaleFactor = 0.80;
+                                  AnimatedConstants.isDragged = true;
+                                });
+                              } else {
+                                setState(() {
+                                  AnimatedConstants.xOffset = 0.0;
+                                  AnimatedConstants.yOffset = 0.0;
+                                  AnimatedConstants.scaleFactor = 1.0;
+                                  AnimatedConstants.isDragged = false;
+                                });
+                              }
                             },
                           ),
                           Padding(
@@ -140,35 +171,11 @@ class _ModulosComponentState extends State<ModulosComponent> {
                               fWeight: FontWeight.normal,
                             ),
                           ),
-                          showInput
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 14.0),
-                                  child: Container(
-                                    width: 165.0,
-                                    height: 22.0,
-                                    decoration: BoxDecoration(
-                                      color: tema.gray0,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color.fromRGBO(
-                                              222, 225, 223, .25),
-                                          offset: Offset(0, 0),
-                                          blurRadius: 32.0,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : Container(),
                           Spacer(),
                           OwnIcon(
                             color: tema.gray8,
                             icon: SurtusIcon.search,
                             onTap: () {
-                              setState(() {
-                                showInput = !showInput;
-                              });
                             },
                           ),
                         ],
@@ -189,6 +196,9 @@ class _ModulosComponentState extends State<ModulosComponent> {
                   ],
                 ),
               ),
+            ),
+          )
+        ]
       ),
     );
   }
