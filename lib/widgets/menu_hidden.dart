@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_drawer_menu/controllers/simple_hidden_drawer_controller.dart';
-import 'package:surtus_app/api/responses/inscripcion/datos_inscrito_response.dart';
 import 'package:surtus_app/api/responses/inscripcion/parametros_inscrito_response.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/components/login_component.dart';
@@ -21,8 +19,7 @@ class _OwnMenuHiddenState extends State<OwnMenuHidden> {
   Temas tema = Temas();
   ApiInscripcion apiInscripcion = ApiInscripcion();
 
-  @override
-  Widget _usuarioAutenticado() {
+  Widget usuarioAutenticado() {
     return FutureBuilder<ParametrosInscritoResponse>(
       future: apiInscripcion.obtenerSesion(context),
       builder: (context, snapshot) {
@@ -95,7 +92,7 @@ class _OwnMenuHiddenState extends State<OwnMenuHidden> {
                     ),
                   ),
                 ),
-                _usuarioAutenticado(),
+                usuarioAutenticado(),
                 SizedBox(height: 26.0),
                 Container(
                   width: 400.0,

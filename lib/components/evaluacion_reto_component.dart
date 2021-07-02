@@ -6,7 +6,6 @@ import 'package:surtus_app/api/requests/reto/puntuar_evaluacion_request.dart';
 import 'package:surtus_app/api/responses/reto/evaluacion_reto_response.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/api/services/reto.dart';
-import 'package:surtus_app/components/retos_component.dart';
 import 'package:surtus_app/shared/evaluacion/respuestas.dart';
 import 'package:surtus_app/shared/interceptor.dart';
 import 'package:surtus_app/shared/surtus_icon.dart';

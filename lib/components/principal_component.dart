@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:surtus_app/api/responses/reto/datos_reto_response.dart';
+import 'package:surtus_app/api/services/inscripcion.dart';
+import 'package:surtus_app/api/services/reto.dart';
 import 'package:surtus_app/components/menu_component.dart';
 import 'package:surtus_app/components/perfil_component.dart';
 import 'package:surtus_app/shared/animacion/animated_constants.dart';
 import 'package:surtus_app/shared/animated_menu.dart';
 import 'package:surtus_app/shared/menu.dart';
+import 'package:surtus_app/shared/retos.dart';
 import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
 import 'package:surtus_app/widgets/icon.dart';
@@ -18,15 +22,75 @@ class PrincipalComponent extends StatefulWidget {
 }
 
 class _PrincipalComponentState extends State<PrincipalComponent> {
+  ApiReto apiReto = ApiReto();
+  ApiInscripcion apiInscripcion = ApiInscripcion();
+  String token;
+  List<DatosRetoResponse> retosEvaluados = [];
+
+  obtenerToken() async {
+    token = await apiInscripcion.getToken();
+    setState(() {});  
+    return token;
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    obtenerToken();
     AnimatedConstants.xOffset = 0;
     AnimatedConstants.yOffset = 0;
     AnimatedConstants.scaleFactor = 1.0;
     AnimatedConstants.isDragged = false;
+  }
+
+    Widget _retosNoEvaluados({double width}) {
+    return FutureBuilder<List<DatosRetoResponse>>(
+      future: apiReto.listarRetosUsuario(token),
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          retosEvaluados =
+              snapshot.data.where((reto) => reto.estado == "E").toList();
+
+          if (retosEvaluados.length == 0) {
+            return Center(
+              child: OwnText(
+                value: 'No tengo ningún reto pendiente!',
+              ),
+            );
+          } else {
+            return Container(
+              width: width,
+              child: ListView.builder(
+                itemCount: retosEvaluados.length,
+                padding: EdgeInsets.zero,
+                itemBuilder: (_, index) {
+                  return RetosContainer(
+                    key: UniqueKey(),
+                    hasNavigation: false,
+                    hasCircle: true,
+                    nota: "Nota ${retosEvaluados[index].evaluacion[0].nota}/5",
+                    value: retosEvaluados[index].nombre,
+                    onTap: () {},
+                  );
+                },
+              ),
+            );
+          }
+        }
+        return Center(
+          child: Container(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 80.0,
+                ),
+                CircularProgressIndicator()
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -52,7 +116,7 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
                       : BorderRadius.circular(0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(32.0),
+                  padding: const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
                   child: Container(
                     child: Column(
                       children: [
@@ -274,6 +338,11 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
                         ),
                         SizedBox(
                           height: 26.0,
+                        ),
+                        Expanded(
+                          child: _retosNoEvaluados(
+                            width: size.width
+                          ),
                         ),
                       ],
                     ),

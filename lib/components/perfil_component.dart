@@ -11,9 +11,7 @@ import 'package:surtus_app/shared/animated_menu.dart';
 import 'package:surtus_app/shared/custom_paint/circle_progress.dart';
 import 'package:surtus_app/shared/menu.dart';
 import 'package:surtus_app/shared/retos.dart';
-import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
-import 'package:surtus_app/widgets/icon.dart';
 import 'package:surtus_app/widgets/modulos_bloqueados.dart';
 import 'package:surtus_app/widgets/text.dart';
 

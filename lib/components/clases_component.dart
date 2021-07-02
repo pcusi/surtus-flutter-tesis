@@ -85,7 +85,6 @@ class _ClasesComponentState extends State<ClasesComponent> {
                         icon: SurtusIcon.back,
                         onTap: () {
                           claseVista(snapshot.data[current].id);
-
                           claseController.nextPage(
                               duration: Duration(milliseconds: 300),
                               curve: Curves.linear);
@@ -116,6 +115,7 @@ class _ClasesComponentState extends State<ClasesComponent> {
                       height: 400.0,
                       viewportFraction: 1,
                       onPageChanged: (index, _) {
+                        claseVista(snapshot.data[current].id);
                         setState(() {
                           current = index;
                         });

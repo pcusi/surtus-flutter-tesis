@@ -2,8 +2,8 @@
     package="com.example.surtus_app">
    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="surtus_app"
-        android:icon="@mipmap/ic_launcher"
+        android:label="Surtus"
+        android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"

@@ -5,7 +5,6 @@ import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/api/services/modulos.dart';
 import 'package:surtus_app/components/clases_component.dart';
 import 'package:surtus_app/components/menu_component.dart';
-import 'package:surtus_app/components/principal_component.dart';
 import 'package:surtus_app/shared/animacion/animated_constants.dart';
 import 'package:surtus_app/shared/animated_menu.dart';
 import 'package:surtus_app/shared/interceptor.dart';

@@ -2,20 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hidden_drawer_menu/simple_hidden_drawer/simple_hidden_drawer.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/components/login_component.dart';
-import 'package:surtus_app/components/modulos_component.dart';
 import 'package:surtus_app/components/menu_component.dart';
-import 'package:surtus_app/components/perfil_component.dart';
 import 'package:surtus_app/components/principal_component.dart';
-import 'package:surtus_app/components/retos_component.dart';
-import 'package:surtus_app/shared/surtus_icon.dart';
-import 'package:surtus_app/shared/temas.dart';
-import 'package:surtus_app/widgets/icon.dart';
-import 'package:surtus_app/widgets/menu_hidden.dart';
-
-import 'package:surtus_app/widgets/text.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -46,7 +36,6 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
 
-    Temas tema = Temas();
     ApiInscripcion inscripcion = ApiInscripcion();
 
     Future<void> _getToken() async {

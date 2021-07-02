@@ -8,7 +8,6 @@ import 'package:surtus_app/api/services/modulos.dart';
 import 'package:surtus_app/api/services/reto.dart';
 import 'package:surtus_app/components/evaluacion_reto_component.dart';
 import 'package:surtus_app/components/menu_component.dart';
-import 'package:surtus_app/components/principal_component.dart';
 import 'package:surtus_app/shared/animacion/animated_constants.dart';
 import 'package:surtus_app/shared/animated_menu.dart';
 import 'package:surtus_app/shared/menu.dart';
