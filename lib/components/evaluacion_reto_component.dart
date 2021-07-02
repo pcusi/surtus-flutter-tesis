@@ -20,11 +20,13 @@ class EvaluacionRetoComponent extends StatefulWidget {
   final String nombre;
   final BuildContext retoContext;
   final String vieneDe;
+  final int idModulo;
 
   EvaluacionRetoComponent({
     Key key,
     @required this.idReto,
     @required this.nombre,
+    @required this.idModulo,
     this.retoContext,
     this.vieneDe,
   }) : super(key: key);
@@ -49,15 +51,16 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
   IconData icon;
   int _lastIdSelected;
   String mensaje;
-  double _progressIndicator = 0.0;
+  double _progressIndicator = 0.2;
 
   Future<EvaluacionRetoResponse> getEvaluacionReto() async {
     final initToken = await apiInscripcion.getToken();
     token = initToken;
     request.idReto = widget.idReto;
+    request.idModulo = widget.idModulo;
     if (initToken != null) {
       final data =
-          await apiReto.evaluacionInscritoReto(request.idReto, initToken);
+          await apiReto.evaluacionInscritoReto(request.idReto, request.idModulo, initToken);
       return data;
     }
     return null;
@@ -123,14 +126,14 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
   }
 
   //parte de la evaluación
-  Widget _preguntaEvaluacion({double w, Color purple, Color gray1,
-    Color gray0, Color gray8}) {
+  Widget _preguntaEvaluacion({double width, Color purple, Color gray1,
+    Color gray0, Color gray8, double widthIndicator}) {
     return FutureBuilder<EvaluacionRetoResponse>(
       future: _future,
       builder: (_, snapshot) {
         if (snapshot.hasData) {
           return Container(
-            width: w,
+            width: width,
             height: 600.0,
             child: PageView.builder(
               onPageChanged: getChangedPageAndMoveBar,
@@ -141,12 +144,12 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Container(
-                    width: w,
+                    width: width,
                     height: 420.0,
                     child: Column(
                       children: [
                         Container(
-                          width: w,
+                          width: width,
                           height: 232.0,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(40.0),
@@ -242,7 +245,7 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
                             Positioned(
                               top: 3.0,
                               child: SizedBox(
-                                width: 280.0,
+                                width: widthIndicator,
                                 height: 12.0,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.all(
@@ -346,62 +349,61 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
             ? InterceptorMessage(
                 value: 'Estamos evaluando tus respuestas',
               )
-            : Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: SingleChildScrollView(
-                  child: Container(
-                    constraints: BoxConstraints(maxHeight: 750.0),
-                    width: size.width,
-                    height: size.height,
-                    decoration: BoxDecoration(
-                      color: tema.gray0,
-                    ),
-                    child: Column(
+            : Container(
+              constraints: BoxConstraints(maxHeight: 750.0),
+              width: size.width,
+              height: size.height,
+              decoration: BoxDecoration(
+                color: tema.gray1,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            OwnIcon(
-                              color: tema.gray8,
-                              icon: SurtusIcon.back,
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 24.0),
-                              child: OwnText(
-                                value: 'Retos',
-                                fSize: 16.0,
-                                fWeight: FontWeight.normal,
-                              ),
-                            ),
-                            Spacer(),
-                          ],
-                        ),
-                        SizedBox(height: 48.0),
-                        OwnText(
-                          value: widget.nombre.toUpperCase(),
-                          fWeight: FontWeight.normal,
-                          fSize: 12.0,
+                        OwnIcon(
                           color: tema.gray8,
+                          icon: SurtusIcon.back,
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
-                        SizedBox(
-                          height: 20.0,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24.0),
+                          child: OwnText(
+                            value: 'Retos',
+                            fSize: 16.0,
+                            fWeight: FontWeight.normal,
+                          ),
                         ),
-                        _preguntaEvaluacion(
-                          w: size.width,
-                          purple: tema.mono7,
-                          gray0: tema.gray0,
-                          gray1: tema.gray1,
-                          gray8: tema.gray8,
-                        ),
+                        Spacer(),
                       ],
                     ),
-                  ),
+                    SizedBox(height: 48.0),
+                    OwnText(
+                      value: widget.nombre.toUpperCase(),
+                      fWeight: FontWeight.normal,
+                      fSize: 12.0,
+                      color: tema.gray8,
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _preguntaEvaluacion(
+                      width: size.width,
+                      widthIndicator: size.width * .70,
+                      purple: tema.mono7,
+                      gray0: tema.gray0,
+                      gray1: tema.gray1,
+                      gray8: tema.gray8,
+                    ),
+                  ],
                 ),
               ),
+            ),
       ),
     );
   }

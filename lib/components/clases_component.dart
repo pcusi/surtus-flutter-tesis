@@ -62,6 +62,7 @@ class _ClasesComponentState extends State<ClasesComponent> {
           return Container(
             width: w,
             height: h,
+            color: Color(0xFFEDEDF1),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -140,11 +141,10 @@ class _ClasesComponentState extends State<ClasesComponent> {
       child: SingleChildScrollView(
         child: Container(
           width: size.width,
-          height: double.maxFinite,
           decoration: BoxDecoration(color: tema.gray1),
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: Container(
+            child: Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

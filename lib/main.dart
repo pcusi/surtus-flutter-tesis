@@ -2,10 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:surtus_app/api/services/inscripcion.dart';
-import 'package:surtus_app/components/login_component.dart';
-import 'package:surtus_app/components/menu_component.dart';
-import 'package:surtus_app/components/principal_component.dart';
+import 'package:surtus_app/components/onboarding_component.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -27,7 +24,11 @@ void main() {
 }
 
 class _MyAppState extends State<MyApp> {
-  String token;
+
+  @override
+  void initState() { 
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,37 +37,12 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitDown,
     ]);
 
-    ApiInscripcion inscripcion = ApiInscripcion();
-
-    Future<void> _getToken() async {
-      final _token = await inscripcion.getToken();
-      token = _token;
-      return token;
-    }
-
-    Widget getComponentLogged() {
-      return FutureBuilder(
-        future: _getToken(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return PrincipalComponent();
-          }
-          return LoginComponent();
-        },
-      );
-    }
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Stack(
-          children: [
-            SurtusMenuDrawer(),
-            getComponentLogged(),
-          ],
-        )
-      ),
+        body: OnboardingComponent(),
+      )
     );
   }
 }

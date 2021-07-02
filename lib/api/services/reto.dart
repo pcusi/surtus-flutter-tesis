@@ -70,10 +70,10 @@ class ApiReto {
   }
 
   Future<EvaluacionRetoResponse> evaluacionInscritoReto(
-      int idReto, String token) async {
+      int idReto, int idModulo, String token) async {
     final uri = "${Api.url}/${Api.reto}/evaluacionReto";
 
-    final Map<String, dynamic> body = {"idReto": idReto};
+    final Map<String, dynamic> body = {"idReto": idReto, "idModulo": idModulo};
 
     final response = await http.post(Uri.parse(uri),
         body: jsonEncode(body),

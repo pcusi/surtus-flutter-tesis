@@ -72,6 +72,7 @@ class _PerfilComponentState extends State<PerfilComponent> {
                           builder: (_) => EvaluacionRetoComponent(
                             idReto: retosNoEvaluados[index].id,
                             nombre: retosNoEvaluados[index].nombre,
+                            idModulo: retosNoEvaluados[index].idModulo,
                             vieneDe: 'Perfil',
                           ),
                         ),

@@ -96,6 +96,7 @@ class _RetosComponentState extends State<RetosComponent> {
                           builder: (_) => EvaluacionRetoComponent(
                             idReto: retos[index].id,
                             nombre: retos[index].nombre,
+                            idModulo: retos[index].idModulo,
                             retoContext: context,
                             vieneDe: 'Reto',
                           ),

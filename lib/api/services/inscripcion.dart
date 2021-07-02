@@ -44,6 +44,17 @@ class ApiInscripcion {
     return _token;
   }
 
+  firstTime() async {
+    final storage = new FlutterSecureStorage();
+    final firstTime = await storage.write(key: 'surtus', value: 'Bienvenido');
+    return firstTime;
+  }
+
+  getFirstTime() async {
+    final firstTime = await storage.read(key: 'surtus');
+    return firstTime;
+  }
+
   Future<bool> cerrarSesion() async {
     await storage.delete(key: Api.tokenName);
     return true;
