@@ -33,6 +33,7 @@ class _RetosComponentState extends State<RetosComponent> {
   String token;
   final reto = new RegistrarRetoRequest();
   List<DatosRetoResponse> retos = <DatosRetoResponse>[];
+  final _nombreController = TextEditingController();
 
   obtenerToken() async {
     token = await inscripcion.getToken();
@@ -52,8 +53,8 @@ class _RetosComponentState extends State<RetosComponent> {
 
   crearReto(context) async {
     if (token != null) {
-      final retoCreado =
-          await apiReto.crearReto(reto.nombre, reto.idModulo, token, context);
+      reto.nombre = _nombreController.text;
+      final retoCreado = await apiReto.crearReto(reto.nombre, reto.idModulo, token, context);
       if (retoCreado != null) {
         setState(() {});
         Navigator.pop(context);
@@ -202,6 +203,10 @@ class _RetosComponentState extends State<RetosComponent> {
                                     isForm: true,
                                     width: 296.0,
                                     height: 180.0,
+                                    onClose: () {
+                                      _nombreController.clear();
+                                      Navigator.pop(context);
+                                    },
                                     inputText: InputText(
                                         labelText: 'Nombre',
                                         labelColor: tema.mono5,
@@ -209,8 +214,8 @@ class _RetosComponentState extends State<RetosComponent> {
                                         hintColor: tema.gray8,
                                         color: tema.gray8,
                                         colorBorder: tema.gray1,
-                                        onChanged: (String nombre) =>
-                                        reto.nombre = nombre),
+                                        controller: _nombreController,
+                                    ),
                                     inputSelect:
                                     FutureBuilder<List<DatosModuloResponse>>(
                                       future: modulo.getModulos(token),

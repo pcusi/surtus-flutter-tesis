@@ -390,7 +390,7 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
                       color: tema.gray8,
                     ),
                     SizedBox(
-                      height: 20.0,
+                      height: 17.0,
                     ),
                     _preguntaEvaluacion(
                       width: size.width,

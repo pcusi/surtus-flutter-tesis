@@ -19,7 +19,7 @@ class ApiModulos {
           result.map((i) => DatosModuloResponse.fromJson(i)));
       return modulos;
     }
-    return null;
+    return [];
   }
 
 

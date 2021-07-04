@@ -16,6 +16,7 @@ class PopUpForm extends StatelessWidget {
   final IconData icon;
   final String mensaje;
   final VoidCallback onPressed;
+  final VoidCallback onClose;
 
   const PopUpForm({
     Key key,
@@ -29,6 +30,7 @@ class PopUpForm extends StatelessWidget {
     this.height = 0.0,
     this.icon,
     this.mensaje,
+    this.onClose,
   }) : super(key: key);
 
   @override
@@ -58,9 +60,7 @@ class PopUpForm extends StatelessWidget {
                         OwnIcon(
                           icon: SurtusIcon.close,
                           color: tema.gray8,
-                          onTap: () {
-                            Navigator.pop(context);
-                          }
+                          onTap: onClose,
                         )
                       ],
                     ),
