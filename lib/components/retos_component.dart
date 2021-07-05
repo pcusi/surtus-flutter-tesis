@@ -201,8 +201,8 @@ class _RetosComponentState extends State<RetosComponent> {
                                   return PopUpForm(
                                     value: 'Crear retos',
                                     isForm: true,
-                                    width: 296.0,
-                                    height: 180.0,
+                                    width: size.width * .8,
+                                    height: size.height * .48,
                                     onClose: () {
                                       _nombreController.clear();
                                       Navigator.pop(context);

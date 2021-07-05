@@ -102,7 +102,7 @@ class _GlosarioComponentState extends State<GlosarioComponent> {
                       : BorderRadius.circular(0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(32.0),
+                  padding: const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
                   child: Column(
                     children: [
                       Row(

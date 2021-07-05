@@ -20,95 +20,89 @@ class AspectosWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height * .18,
-      child: isAspecto
-          ? GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              childAspectRatio: 1,
-              mainAxisSpacing: 2,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                for (var i = 0; i < 2; i++)
-                  Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Column(
-                      children: [
-                        OwnText(
-                          value: i == 0
-                              ? 'Aspectos Visuales'.toUpperCase()
-                              : 'Aspectos Gestuales'.toUpperCase(),
-                          color: tema.bgOne,
-                          fSize: 12.0,
-                          fWeight: FontWeight.normal,
+    return isAspecto
+        ? GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            childAspectRatio: 1,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              for (var i = 0; i < 2; i++)
+                Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Column(
+                    children: [
+                      OwnText(
+                        value: i == 0
+                            ? 'Aspectos Visuales'.toUpperCase()
+                            : 'Aspectos Gestuales'.toUpperCase(),
+                        color: tema.bgOne,
+                        fSize: 12.0,
+                        fWeight: FontWeight.normal,
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      Container(
+                        width: width * .40,
+                        decoration: BoxDecoration(
+                          color: tema.gray1,
+                          borderRadius: BorderRadius.circular(16.0),
+                          boxShadow: [
+                            BoxShadow(
+                              offset: Offset(-2, -2),
+                              blurRadius: 4.0,
+                              color: Colors.white,
+                            ),
+                            BoxShadow(
+                              offset: Offset(2, 2),
+                              blurRadius: 4.0,
+                              color: Color(0xFF828282).withOpacity(.25),
+                            )
+                          ],
                         ),
-                        SizedBox(
-                          height: 16.0,
-                        ),
-                        Container(
-                          width: width * .40,
-                          height: height * .13,
-                          decoration: BoxDecoration(
-                            color: tema.gray1,
-                            borderRadius: BorderRadius.circular(16.0),
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(-2, -2),
-                                blurRadius: 4.0,
-                                color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              OwnText(
+                                value: i == 0
+                                    ? 'Atención Visual'
+                                    : 'Expresión corporal',
+                                color: tema.gray8,
+                                fWeight: FontWeight.normal,
+                                fSize: 12.0,
                               ),
-                              BoxShadow(
-                                offset: Offset(2, 2),
-                                blurRadius: 4.0,
-                                color: Color(0xFF828282).withOpacity(.25),
-                              )
+                              SizedBox(
+                                height: 12.0,
+                              ),
+                              OwnText(
+                                value: i == 0
+                                    ? 'Discriminación Visual'
+                                    : 'Expresión facial',
+                                color: tema.gray8,
+                                fWeight: FontWeight.normal,
+                                fSize: 12.0,
+                              ),
+                              SizedBox(
+                                height: 12.0,
+                              ),
+                              OwnText(
+                                value: i == 0 ? 'Memoria Visual' : 'Motricidad',
+                                color: tema.gray8,
+                                fWeight: FontWeight.normal,
+                                fSize: 12.0,
+                              ),
                             ],
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                OwnText(
-                                  value: i == 0
-                                      ? 'Atención Visual'
-                                      : 'Expresión corporal',
-                                  color: tema.gray8,
-                                  fWeight: FontWeight.normal,
-                                  fSize: 12.0,
-                                ),
-                                SizedBox(
-                                  height: 12.0,
-                                ),
-                                OwnText(
-                                  value: i == 0
-                                      ? 'Discriminación Visual'
-                                      : 'Expresión facial',
-                                  color: tema.gray8,
-                                  fWeight: FontWeight.normal,
-                                  fSize: 12.0,
-                                ),
-                                SizedBox(
-                                  height: 12.0,
-                                ),
-                                OwnText(
-                                  value: i == 0 ? 'Memoria Visual' : 'Motricidad',
-                                  color: tema.gray8,
-                                  fWeight: FontWeight.normal,
-                                  fSize: 12.0,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-              ],
-            )
-          : this.child,
-    );
+                        ),
+                      )
+                    ],
+                  ),
+                )
+            ],
+          )
+        : this.child;
   }
 }

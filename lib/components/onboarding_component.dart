@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:surtus_app/api/services/inscripcion.dart';
 import 'package:surtus_app/components/login_component.dart';
+import 'package:surtus_app/components/principal_component.dart';
 import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
 import 'package:surtus_app/widgets/icon.dart';
@@ -25,15 +26,22 @@ class _OnboardingComponentState extends State<OnboardingComponent> {
   ApiInscripcion apiInscripcion = ApiInscripcion();
   String firstTime;
   Future _future;
+  String token;
 
   getFirstTime() async {
     firstTime = await apiInscripcion.getFirstTime();
     return firstTime;
   }
 
+  getToken() async {
+    token = await apiInscripcion.getToken();
+    return token;
+  }
+
   @override
   void initState() {
     super.initState();
+    getToken();
     _future = getFirstTime();
   }
 
@@ -53,6 +61,9 @@ class _OnboardingComponentState extends State<OnboardingComponent> {
         future: _future,
         builder: (_, snapshot) {
         if (snapshot.hasData) {
+          if (token != null) {
+            return PrincipalComponent();
+          }
           return LoginComponent();
         } else {
           return PageView.builder(

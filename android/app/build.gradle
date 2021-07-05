@@ -6,6 +6,12 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -22,12 +28,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-def keystoreProperties = new Properties()
-   def keystorePropertiesFile = rootProject.file('key.properties')
-   if (keystorePropertiesFile.exists()) {
-       keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-   }
-
 android {
     compileSdkVersion 28
 
@@ -36,9 +36,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.surtus_app"
+        applicationId "com.pcrdpg.surtus"
         minSdkVersion 18
-        //noinspection OldTargetApi
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -56,7 +55,6 @@ android {
    buildTypes {
        release {
            signingConfig signingConfigs.release
-           multiDexEnabled true
        }
    }
 }
@@ -67,5 +65,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:multidex:1.0.3'
 }

@@ -13,7 +13,9 @@ import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
 import 'package:surtus_app/widgets/icon.dart';
 import 'package:surtus_app/widgets/modulos_container.dart';
+import 'package:surtus_app/widgets/principal/interes_container.dart';
 import 'package:surtus_app/widgets/text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrincipalComponent extends StatefulWidget {
   PrincipalComponent({Key key}) : super(key: key);
@@ -44,26 +46,28 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
     AnimatedConstants.isDragged = false;
   }
 
-  Widget _retosNoEvaluados({double width}) {
+  Widget _retosNoEvaluados({double height}) {
     return FutureBuilder<List<DatosRetoResponse>>(
       future: apiReto.listarRetosUsuario(token),
       builder: (_, snapshot) {
         if (snapshot.hasData) {
-          retosEvaluados =
-              snapshot.data.where((reto) => reto.estado == "E").toList();
-
+          retosEvaluados = snapshot.data.where((reto) => reto.estado == "E").toList();
           if (retosEvaluados.length == 0) {
-            return Center(
-              child: OwnText(
-                value: 'No tengo ningún reto pendiente!',
+            return SizedBox(
+              height: 50.0,
+              child: Center(
+                child: OwnText(
+                  value: 'No tengo ningún reto pendiente!',
+                ),
               ),
             );
           } else {
-            return Container(
-              width: width,
+            return SizedBox(
+              height: height * .75,
               child: ListView.builder(
                 itemCount: retosEvaluados.length,
                 padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (_, index) {
                   return RetosContainer(
                     key: UniqueKey(),
@@ -79,16 +83,7 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
           }
         }
         return Center(
-          child: Container(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 80.0,
-                ),
-                CircularProgressIndicator()
-              ],
-            ),
-          ),
+          child: CircularProgressIndicator(),
         );
       },
     );
@@ -117,8 +112,7 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
                     : BorderRadius.circular(0),
               ),
               child: Padding(
-                padding:
-                    const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
+                padding: EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
                 child: Container(
                   child: Column(
                     children: [
@@ -166,225 +160,122 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
                         ],
                       ),
                       SizedBox(height: 28.0),
-                      Row(
-                        children: [
-                          OwnText(
-                            value: 'Te podría interesar',
-                            color: tema.mono7,
-                            fSize: 16.0,
-                            fWeight: FontWeight.normal,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 26.0,
-                      ),
-                      Container(
-                        width: size.width,
-                        height: 110.0,
-                        decoration: BoxDecoration(
-                          color: tema.mono7,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0,
-                            vertical: 30.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  OwnText(
-                                    value: 'Ministerio de educación',
-                                    color: tema.gray3,
-                                    fSize: 12.0,
-                                    fAlign: TextAlign.start,
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  OwnText(
-                                    value: 'Guía de aprendizaje',
-                                    color: Colors.white,
-                                    fSize: 16.0,
-                                    fAlign: TextAlign.start,
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                width: 60.0,
-                                height: 60.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: tema.mono7,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0XFFFFFFFF).withOpacity(.15),
-                                      blurRadius: 3.0,
-                                      offset: Offset(-2, -2),
-                                      spreadRadius: 1.0
-                                    ),
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, .15),
-                                      blurRadius: 3.0,
-                                      offset: Offset(2, 2),
-                                      spreadRadius: 2.0
-                                    ),
-                                  ],
-                                ),
-                                child: OwnIcon(
-                                  icon: SurtusIcon.guide,
-                                  color: Colors.white,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 26.0,
-                      ),
-                      Container(
-                        width: size.width,
-                        height: 110.0,
-                        decoration: BoxDecoration(
-                          color: tema.bgOne,
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24.0,
-                            vertical: 30.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Row(
                                   children: [
                                     OwnText(
-                                      value: 'Primeros pasos',
-                                      isOverflow: true,
-                                      color: tema.gray3,
-                                      fSize: 12.0,
-                                      fAlign: TextAlign.start,
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    OwnText(
-                                      value: 'Aprestamiento',
-                                      color: Colors.white,
+                                      value: 'Te podría interesar',
+                                      color: tema.mono7,
                                       fSize: 16.0,
+                                      fWeight: FontWeight.normal,
                                     ),
                                   ],
                                 ),
-                              ),
-                              Container(
-                                width: 60.0,
-                                height: 60.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: tema.bgOne,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(0XFFFFFFFF).withOpacity(.15),
-                                      blurRadius: 3.0,
-                                      offset: Offset(-2, -2),
-                                      spreadRadius: 1.0
-                                    ),
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, .15),
-                                      blurRadius: 3.0,
-                                      offset: Offset(2, 2),
-                                      spreadRadius: 2.0
-                                    ),
-                                  ],
+                                SizedBox(
+                                  height: 26.0,
                                 ),
-                                child: OwnIcon(
-                                  icon: SurtusIcon.exercise,
-                                  color: Colors.white,
-                                  onTap: () {
+                                InteresContainer(
+                                  width: size.width,
+                                  height: 110.0,
+                                  title: 'Guía de aprendizaje',
+                                  subtitle: 'Ministerio de educación',
+                                  bgColor: tema.mono5,
+                                  navigateTo: () => launch(''),
+                                ),
+                                SizedBox(
+                                  height: 26.0,
+                                ),
+                                InteresContainer(
+                                  width: size.width,
+                                  height: 110.0,
+                                  title: 'Aprestamiento',
+                                  subtitle: 'Primeros pasos',
+                                  bgColor: tema.bgOne,
+                                  navigateTo: () {
                                     Navigator.push(context, MaterialPageRoute(builder: (_) => AprestamientoComponent()));
                                   },
                                 ),
-                              )
-                            ],
+                                SizedBox(
+                                  height: 28.0,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    OwnText(
+                                      value: 'Módulos',
+                                      color: tema.mono7,
+                                      fSize: 16.0,
+                                      fWeight: FontWeight.normal,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20.0,
+                                ),
+                                SizedBox(
+                                  height: size.height * .14,
+                                  child: GridView.count(
+                                    childAspectRatio: 2,
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 16.0,
+                                    mainAxisSpacing: 16.0,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.all(10.0),
+                                    children: [
+                                      ModulosContainer(
+                                        width: 148.0,
+                                        height: 64.0,
+                                        bgColor: tema.gray1,
+                                        value: 'Abecedario',
+                                        image: 'assets/manos/abecedario.png',
+                                        fColor: tema.gray8,
+                                        fWeight: FontWeight.normal,
+                                        fSize: 12.0,
+                                        isRow: true,
+                                      ),
+                                      ModulosContainer(
+                                        width: 148.0,
+                                        height: 64.0,
+                                        bgColor: tema.gray1,
+                                        value: 'Abecedario',
+                                        image: 'assets/manos/abecedario.png',
+                                        fColor: tema.gray8,
+                                        fWeight: FontWeight.normal,
+                                        fSize: 12.0,
+                                        isRow: true,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 28.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    OwnText(
+                                      value: 'Reciente',
+                                      color: tema.mono7,
+                                      fSize: 16.0,
+                                      fWeight: FontWeight.normal,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 26.0,
+                                ),
+                                _retosNoEvaluados(
+                                  height: size.height,
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 28.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          OwnText(
-                            value: 'Módulos',
-                            color: tema.mono7,
-                            fSize: 16.0,
-                            fWeight: FontWeight.normal,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Container(
-                        height: size.height * .12,
-                        child: GridView.count(
-                          childAspectRatio: 2,
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16.0,
-                          mainAxisSpacing: 16.0,
-                          physics: NeverScrollableScrollPhysics(),
-                          padding: EdgeInsets.all(10.0),
-                          children: [
-                            ModulosContainer(
-                              width: 148.0,
-                              height: 64.0,
-                              bgColor: tema.gray1,
-                              value: 'Abecedario',
-                              image: 'assets/manos/abecedario.png',
-                              fColor: tema.gray8,
-                              fWeight: FontWeight.normal,
-                              fSize: 12.0,
-                              isRow: true,
-                            ),
-                            ModulosContainer(
-                              width: 148.0,
-                              height: 64.0,
-                              bgColor: tema.gray1,
-                              value: 'Abecedario',
-                              image: 'assets/manos/abecedario.png',
-                              fColor: tema.gray8,
-                              fWeight: FontWeight.normal,
-                              fSize: 12.0,
-                              isRow: true,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 28.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          OwnText(
-                            value: 'Reciente',
-                            color: tema.mono7,
-                            fSize: 16.0,
-                            fWeight: FontWeight.normal,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 26.0,
-                      ),
-                      Expanded(
-                        child: _retosNoEvaluados(width: size.width),
-                      ),
+                      )
                     ],
                   ),
                 ),

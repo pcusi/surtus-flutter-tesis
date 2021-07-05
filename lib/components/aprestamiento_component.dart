@@ -58,7 +58,7 @@ class _AprestamientoComponentState extends State<AprestamientoComponent> {
                   child: SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 2.0),
-                      height: size.height * 1.45,
+                      height: size.height * 1.70,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -72,7 +72,10 @@ class _AprestamientoComponentState extends State<AprestamientoComponent> {
                           SizedBox(height: 32.0),
                           Container(
                             width: size.width,
-                            height: size.height * .186,
+                            height: size.height * .21,
+                            constraints: BoxConstraints(
+                              maxHeight: double.infinity,
+                            ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25.0),
                               color: tema.gray1,
@@ -105,13 +108,17 @@ class _AprestamientoComponentState extends State<AprestamientoComponent> {
                           SizedBox(
                             height: 40.0,
                           ),
-                          AspectosWidget(
-                            width: size.width,
-                            height: size.height,
-                            tema: tema,
-                            isAspecto: true,
+                          SizedBox(
+                            height: size.height * .2,
+                            child: AspectosWidget(
+                              width: size.width,
+                              height: size.height,
+                              tema: tema,
+                              isAspecto: true,
+                            ),
                           ),
                           SizedBox(height: 40.0),
+                          //Ejercicios de atención y discriminación
                           OwnText(
                             value:
                                 'Ejercicios de atención y discriminación\n visual'
@@ -133,11 +140,7 @@ class _AprestamientoComponentState extends State<AprestamientoComponent> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          Container(
-                            height: size.height * .8,
-                            constraints: BoxConstraints(
-                              maxHeight: double.infinity,
-                            ),
+                          Expanded(
                             child: AspectosWidget(
                               width: size.width,
                               height: size.height,

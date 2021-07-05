@@ -349,58 +349,58 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
             ? InterceptorMessage(
                 value: 'Estamos evaluando tus respuestas',
               )
-            : Container(
-              constraints: BoxConstraints(maxHeight: 750.0),
-              width: size.width,
-              height: size.height,
-              decoration: BoxDecoration(
-                color: tema.gray1,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        OwnIcon(
-                          color: tema.gray8,
-                          icon: SurtusIcon.back,
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 24.0),
-                          child: OwnText(
-                            value: 'Retos',
-                            fSize: 16.0,
-                            fWeight: FontWeight.normal,
+            : SingleChildScrollView(
+              child: Container(
+                width: size.width,
+                decoration: BoxDecoration(
+                  color: tema.gray1,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          OwnIcon(
+                            color: tema.gray8,
+                            icon: SurtusIcon.back,
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                        ),
-                        Spacer(),
-                      ],
-                    ),
-                    SizedBox(height: 48.0),
-                    OwnText(
-                      value: widget.nombre.toUpperCase(),
-                      fWeight: FontWeight.normal,
-                      fSize: 12.0,
-                      color: tema.gray8,
-                    ),
-                    SizedBox(
-                      height: 17.0,
-                    ),
-                    _preguntaEvaluacion(
-                      width: size.width,
-                      widthIndicator: size.width * .70,
-                      purple: tema.mono7,
-                      gray0: tema.gray0,
-                      gray1: tema.gray1,
-                      gray8: tema.gray8,
-                    ),
-                  ],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 24.0),
+                            child: OwnText(
+                              value: 'Retos',
+                              fSize: 16.0,
+                              fWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                      SizedBox(height: 48.0),
+                      OwnText(
+                        value: widget.nombre.toUpperCase(),
+                        fWeight: FontWeight.normal,
+                        fSize: 12.0,
+                        color: tema.gray8,
+                      ),
+                      SizedBox(
+                        height: 17.0,
+                      ),
+                      _preguntaEvaluacion(
+                        width: size.width,
+                        widthIndicator: size.width * .70,
+                        purple: tema.mono7,
+                        gray0: tema.gray0,
+                        gray1: tema.gray1,
+                        gray8: tema.gray8,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -82,7 +82,7 @@ class _GlosarioBuscarComponentState extends State<GlosarioBuscarComponent> {
           width: size.width,
           color: tema.gray1,
           child: Padding(
-            padding: const EdgeInsets.all(32.0),
+            padding: EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0,),
             child: Column(
               children: [
                 Row(
@@ -98,7 +98,7 @@ class _GlosarioBuscarComponentState extends State<GlosarioBuscarComponent> {
                     Padding(
                       padding: const EdgeInsets.only(left: 14.0),
                       child: Container(
-                        width: 240.0,
+                        width: size.width * .65,
                         height: 40.0,
                         decoration: BoxDecoration(
                           color: tema.gray0,
