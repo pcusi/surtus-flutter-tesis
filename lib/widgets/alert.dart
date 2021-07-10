@@ -23,7 +23,7 @@ class AlertApi extends StatelessWidget {
             OwnText(
               value: mensaje,
               fSize: 16.0,
-            )
+            ),
           ],
         ),
       ),

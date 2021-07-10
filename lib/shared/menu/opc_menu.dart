@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:surtus_app/components/ar_component.dart';
 import 'package:surtus_app/components/glosario/glosario_component.dart';
 import 'package:surtus_app/components/modulos_component.dart';
 import 'package:surtus_app/components/principal_component.dart';
@@ -40,7 +41,7 @@ class OpcionesMenu {
     ),
     OpcionesMenu(
       value: "AR",
-      child: GlosarioComponent(),
+      child: ArComponent(),
       icon: SurtusIcon.ar
     ),
   ];

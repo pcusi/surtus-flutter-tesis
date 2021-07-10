@@ -112,7 +112,7 @@ class _OwnMenuHiddenState extends State<OwnMenuHidden> {
                     },
                   ),
                 ),
-                Spacer(),
+                SizedBox(height: size.height * .15,),
                 OwnListTile(
                   value: 'Cerrar sesión',
                   icon: SurtusIcon.logout,
