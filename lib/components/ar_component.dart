@@ -1,88 +1,99 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
-import 'package:surtus_app/shared/animacion/animated_constants.dart';
+import 'package:flutter_unity_widget/flutter_unity_widget.dart';
+import 'package:surtus_app/shared/surtus_icon.dart';
 import 'package:surtus_app/shared/temas.dart';
-import 'package:vector_math/vector_math_64.dart' as vector;
+import 'package:surtus_app/widgets/icon.dart';
+import 'package:surtus_app/widgets/text.dart';
 
 class ArComponent extends StatefulWidget {
-  ArComponent({Key key}) : super(key: key);
+  const ArComponent({Key key}) : super(key: key);
 
   @override
   _ArComponentState createState() => _ArComponentState();
 }
 
 class _ArComponentState extends State<ArComponent> {
-  ArCoreController arCoreController;
-  Map<int, ArCoreAugmentedImage> augmentedImagesMap = Map();
-
-  void _onArCoreViewCreated(ArCoreController controller) {
-    arCoreController = controller;
-    arCoreController.onTrackingImage = _handleOnTrackingImage;
-    loadSingleImage();
-  }
-
-  loadSingleImage() async {
-    final ByteData bytes = await rootBundle.load('assets/manos/scan_earth.jpeg');
-    arCoreController.loadSingleAugmentedImage(
-      bytes: bytes.buffer.asUint8List(),
-    );
-  }
-
-  _handleOnTrackingImage(ArCoreAugmentedImage augmentedImage) {
-    if (!augmentedImagesMap.containsKey(augmentedImage.index)) {
-      augmentedImagesMap[augmentedImage.index] = augmentedImage;
-      _addSphere(augmentedImage);
-    }
-  }
-
-  Future _addSphere(ArCoreAugmentedImage augmentedImage) async {
-    final ByteData textureBytes = await rootBundle.load('assets/manos/bien.png');
-
-    final material = ArCoreMaterial(
-      color: Color.fromARGB(120, 66, 134, 244),
-      textureBytes: textureBytes.buffer.asUint8List(),
-    );
-    final sphere = ArCoreSphere(
-      materials: [material],
-      radius: augmentedImage.index / 2,
-    );
-    final node = ArCoreNode(
-      shape: sphere,
-      position: vector.Vector3(0.0, 0.0, 0.0),
-    );
-    arCoreController.addArCoreNodeToAugmentedImage(node, augmentedImage.index);
-  }
+  static final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  UnityWidgetController unityWidgetController;
 
   @override
-  void initState() {
+  void initState() { 
     super.initState();
-    AnimatedConstants.xOffset = 0.0;
-    AnimatedConstants.yOffset = 0.0;
-    AnimatedConstants.scaleFactor = 1.0;
-    AnimatedConstants.isDragged = false;
   }
 
   @override
-  void dispose() {
-    arCoreController.dispose();
+  void dispose() { 
+    unityWidgetController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    Temas tema = Temas();
 
+    Temas tema = Temas();
+    final size = MediaQuery.of(context).size;
+    
     return Scaffold(
-      body: Container(
-        height: size.height,
-        width: size.width,
-        child: ArCoreView(
-          onArCoreViewCreated: _onArCoreViewCreated,
-          type: ArCoreViewType.AUGMENTEDIMAGES,
-        ),
-      ),
-    );
+      key: _scaffoldKey,
+      body: SafeArea(
+        bottom: false,
+        child: Stack(
+            children: [
+              Container(
+                width: size.width,
+                height: size.height,
+                child: UnityWidget(
+                  onUnityCreated: onUnityCreated,
+                  fullscreen: false,
+                ),
+              ),
+              Positioned(
+                top: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Container(
+                    width: 50.0,
+                    height: 50.0,
+                    child: OwnIcon(
+                      icon: SurtusIcon.back,
+                      color: tema.gray0,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Container(
+                    width: 230.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: tema.gray0,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: OwnText(
+                        value: 'Escanea el código de tu amigo.',
+                        fSize: 14.0,
+                        color: tema.gray8,
+                        fWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+      );
+  }
+
+  void onUnityCreated(controller) {
+    this.unityWidgetController = controller;
   }
 }

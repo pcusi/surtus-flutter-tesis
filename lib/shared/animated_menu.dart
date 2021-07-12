@@ -24,7 +24,7 @@ class _MenuAnimatedContainerState extends State<MenuAnimatedContainer> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
+      duration: Duration(milliseconds: 350),
       transform: Matrix4.translationValues(widget.xOffset, widget.yOffset, 0)
         ..scale(widget.scaleFactor),
       child: widget.child,

@@ -3,6 +3,7 @@ import 'package:surtus_app/components/ar_component.dart';
 import 'package:surtus_app/components/glosario/glosario_component.dart';
 import 'package:surtus_app/components/modulos_component.dart';
 import 'package:surtus_app/components/principal_component.dart';
+import 'package:surtus_app/components/qr_component.dart';
 import 'package:surtus_app/components/retos_component.dart';
 import 'package:surtus_app/shared/surtus_icon.dart';
 
@@ -36,7 +37,7 @@ class OpcionesMenu {
     ),
     OpcionesMenu(
       value: "QR",
-      child: GlosarioComponent(),
+      child: QrComponent(),
       icon: SurtusIcon.qr,
     ),
     OpcionesMenu(

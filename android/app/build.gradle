@@ -23,10 +23,15 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+        checkReleaseBuilds false
     }
 
     compileOptions {
@@ -37,16 +42,25 @@ android {
     defaultConfig {
         applicationId "com.example.surtus_app"
         minSdkVersion 24
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
    
-   buildTypes {
-       release {
-           signingConfig signingConfigs.debug
-       }
-   }
+     buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        profile {
+            signingConfig signingConfigs.debug
+        }
+        innerTest {
+            matchingFallbacks = ['debug', 'release']
+        }
+    }
 }
 
 flutter {
@@ -55,7 +69,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.17.1'
-	implementation 'com.google.ar.sceneform:core:1.17.1'
-	implementation 'com.google.ar:core:1.25.0'
+    implementation project(':UnityARCore')
+    implementation project(':unityandroidpermissions')
+    implementation project(':arcore_client')
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:surtus_app/api/requests/inscrito/iniciar_sesion_request.dart';
+import 'package:surtus_app/api/responses/inscripcion/datos_marcador_inscrito_response.dart';
 import 'package:surtus_app/api/responses/inscripcion/parametros_inscrito_response.dart';
 
 import '../api.dart';
@@ -73,6 +74,23 @@ class ApiInscripcion {
       final result = json["result"];
       final inscrito = ParametrosInscritoResponse.fromJson(result);
       return inscrito;
+    }
+
+    return null;
+  }
+
+  Future<DatosMarcadorInscritoResponse> obtenerMarcador(String token) async {
+    final _uri = "${Api.url}/${Api.inscripcion}/obtenerMarcador";
+    final response = await http.get(Uri.parse(_uri), headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    });
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final result = json["result"];
+      final marcador = DatosMarcadorInscritoResponse.fromJson(result);
+      return marcador;
     }
 
     return null;

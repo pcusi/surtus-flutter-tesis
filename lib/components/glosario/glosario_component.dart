@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:surtus_app/api/responses/glosario/datos_glosario_response.dart';
 import 'package:surtus_app/api/services/clases.dart';
 import 'package:surtus_app/components/glosario/glosario_buscar_component.dart';
+import 'package:surtus_app/components/glosario/glosario_detalle_component.dart';
 import 'package:surtus_app/shared/animacion/animated_constants.dart';
 import 'package:surtus_app/shared/animated_menu.dart';
 import 'package:surtus_app/shared/menu.dart';
@@ -54,13 +55,24 @@ class _GlosarioComponentState extends State<GlosarioComponent> {
                 itemBuilder: (_, index) {
                   return RetosContainer(
                     key: UniqueKey(),
-                    hasNavigation: false,
+                    hasNavigation: true,
                     hasCircle: false,
                     nota: snapshot.data[index].moduloNombre,
                     value: snapshot.data[index].nombre,
                     hasImage: true,
                     image: snapshot.data[index].imagen,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => GlosarioDetalleComponent(
+                            moduloNombre: snapshot.data[index].moduloNombre,
+                            claseNombre: snapshot.data[index].nombre,
+                            claseImagen: snapshot.data[index].imagen,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -102,7 +114,8 @@ class _GlosarioComponentState extends State<GlosarioComponent> {
                       : BorderRadius.circular(0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
+                  padding:
+                      const EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0),
                   child: Column(
                     children: [
                       Row(

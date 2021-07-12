@@ -40,8 +40,8 @@ class _PrincipalComponentState extends State<PrincipalComponent> {
   void initState() {
     super.initState();
     obtenerToken();
-    AnimatedConstants.xOffset = 0;
-    AnimatedConstants.yOffset = 0;
+    AnimatedConstants.xOffset = 0.0;
+    AnimatedConstants.yOffset = 0.0;
     AnimatedConstants.scaleFactor = 1.0;
     AnimatedConstants.isDragged = false;
   }

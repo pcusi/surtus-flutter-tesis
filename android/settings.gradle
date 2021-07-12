@@ -1,4 +1,16 @@
-include ':app'
+include ':app',
+        ':unity-classes',
+        ':VuforiaWrapper',
+        ':UnityARCore',
+        ':arcore_client',
+        ':VuforiaWrapper',
+        ':unityandroidpermissions',
+        ':unityLibrary'
+
+project(":unityLibrary").projectDir = file("./unityLibrary")
+project(":arcore_client").projectDir = file("./arcore_client")
+project(":UnityARCore").projectDir = file("./UnityARCore")
+project(":unityandroidpermissions").projectDir = file("./unityandroidpermissions")
 
 def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
 def properties = new Properties()

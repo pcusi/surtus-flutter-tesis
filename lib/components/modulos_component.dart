@@ -45,8 +45,8 @@ class _ModulosComponentState extends State<ModulosComponent> {
   void initState() {
     super.initState();
     obtenerToken();
-    AnimatedConstants.xOffset = 0;
-    AnimatedConstants.yOffset = 0;
+    AnimatedConstants.xOffset = 0.0;
+    AnimatedConstants.yOffset = 0.0;
     AnimatedConstants.scaleFactor = 1.0;
     AnimatedConstants.isDragged = false;
   }
@@ -59,7 +59,6 @@ class _ModulosComponentState extends State<ModulosComponent> {
           return GridView.builder(
             padding: EdgeInsets.all(10.0),
             itemCount: snapshot.data.length,
-            physics: NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 1,
@@ -184,7 +183,7 @@ class _ModulosComponentState extends State<ModulosComponent> {
                       padding: EdgeInsets.all(22.0),
                       child: Container(
                         constraints: BoxConstraints(
-                          maxHeight: 400,
+                          maxHeight: size.height * .8,
                         ),
                         child: _gridModulos(
                           bgColor: tema.gray1,

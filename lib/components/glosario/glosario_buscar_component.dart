@@ -9,6 +9,8 @@ import 'package:surtus_app/shared/temas.dart';
 import 'package:surtus_app/widgets/icon.dart';
 import 'package:surtus_app/widgets/text.dart';
 
+import 'glosario_detalle_component.dart';
+
 class GlosarioBuscarComponent extends StatefulWidget {
   const GlosarioBuscarComponent({Key key}) : super(key: key);
 
@@ -49,13 +51,24 @@ class _GlosarioBuscarComponentState extends State<GlosarioBuscarComponent> {
       });
 
   Widget _glosarioBuscado(DatosGlosarioResponse glosario) => RetosContainer(
-        hasNavigation: false,
+        hasNavigation: true,
         hasCircle: false,
         nota: glosario.moduloNombre,
         value: glosario.nombre,
         hasImage: true,
         image: glosario.imagen,
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => GlosarioDetalleComponent(
+                moduloNombre: glosario.moduloNombre,
+                claseNombre: glosario.nombre,
+                claseImagen: glosario.imagen,
+              ),
+            ),
+          );
+        },
       );
 
   @override
@@ -82,7 +95,11 @@ class _GlosarioBuscarComponentState extends State<GlosarioBuscarComponent> {
           width: size.width,
           color: tema.gray1,
           child: Padding(
-            padding: EdgeInsets.only(left: 32.0, top: 32.0, right: 32.0,),
+            padding: EdgeInsets.only(
+              left: 32.0,
+              top: 32.0,
+              right: 32.0,
+            ),
             child: Column(
               children: [
                 Row(
