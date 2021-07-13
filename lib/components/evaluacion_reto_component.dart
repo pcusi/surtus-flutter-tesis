@@ -352,6 +352,7 @@ class _EvaluacionRetoComponentState extends State<EvaluacionRetoComponent> with 
             : SingleChildScrollView(
               child: Container(
                 width: size.width,
+                height: size.height,
                 decoration: BoxDecoration(
                   color: tema.gray1,
                 ),

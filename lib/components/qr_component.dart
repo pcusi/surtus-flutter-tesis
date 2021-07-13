@@ -25,21 +25,16 @@ class _QrComponentState extends State<QrComponent> {
     return token;
   }
 
-  Widget obtenerMarcador({double width}) {
+  Widget obtenerMarcador() {
     return FutureBuilder<DatosMarcadorInscritoResponse>(
       future: apiInscripcion.obtenerMarcador(token),
       builder: (_, snapshot) {
         if (snapshot.hasData) {
-          return Container(
-            width: width,
-            height: 350.0,
-            child: Image.network(
-              snapshot.data.marcador,
-              fit: BoxFit.fill,
-            ),
+          return Image.network(
+            snapshot.data.marcador,
+            fit: BoxFit.cover,
           );
         }
-
         return Center(
           child: CircularProgressIndicator(),
         );
@@ -74,16 +69,17 @@ class _QrComponentState extends State<QrComponent> {
               child: Container(
                 width: size.width,
                 decoration: BoxDecoration(
-                  color: tema.gray1,
+                  color: Color(0xFF111111),
                   borderRadius: AnimatedConstants.isDragged
                       ? BorderRadius.circular(25.0)
                       : BorderRadius.circular(0),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    children: [
-                      Align(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Align(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -111,14 +107,12 @@ class _QrComponentState extends State<QrComponent> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: size.height * .2,
-                      ),
-                      obtenerMarcador(
-                        width: size.width,
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: size.height * .1,
+                    ),
+                    obtenerMarcador(),
+                  ],
                 ),
               ),
             ),

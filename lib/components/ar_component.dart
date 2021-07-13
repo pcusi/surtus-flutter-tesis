@@ -87,6 +87,46 @@ class _ArComponentState extends State<ArComponent> {
                   ),
                 ),
               ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: tema.gray0,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: OwnIcon(
+                      icon: Icons.stop,
+                      color: tema.gray8,
+                      onTap: pause,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 80,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: tema.gray0,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: OwnIcon(
+                      icon: Icons.play_arrow,
+                      color: tema.gray8,
+                      onTap: resume,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         )
@@ -95,5 +135,13 @@ class _ArComponentState extends State<ArComponent> {
 
   void onUnityCreated(controller) {
     this.unityWidgetController = controller;
+  }
+
+  void resume() {
+    this.unityWidgetController.resume();
+  }
+
+  void pause() {
+    this.unityWidgetController.pause();
   }
 }
